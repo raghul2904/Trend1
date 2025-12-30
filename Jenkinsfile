@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()
+    }
+
     environment {
         IMAGE_NAME = "sivakumaraws/trend-app"
         TAG = "latest"
@@ -8,7 +12,7 @@ pipeline {
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
@@ -32,7 +36,7 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Push Image') {
             steps {
                 sh 'docker push $IMAGE_NAME:$TAG'
             }
