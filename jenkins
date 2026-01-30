@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git url: 'https://github.com/<your-github-username>/Trend.git', branch: 'main'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t <dockerhub-username>/trend-app:latest .'
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                withCredentials([string(credentialsId: 'dockerhub-pass', variable: 'DOCKER_PASS')]) {
+                    sh '''
+                    echo $DOCKER_PASS | docker login -u <dockerhub-username> --password-stdin
+                    docker push <dockerhub-username>/trend-app:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+                sh 'kubectl apply -f service.yaml'
+            }
+        }
+    }
+}
