@@ -27,7 +27,7 @@ pipeline {
          steps{
             script {
                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS']]) {
-	           aws eks update-kubeconfig --region us-east-1 --name --scrumptious-metal-otter		
+	           aws eks update-kubeconfig --region us-east-1 --name --demo		
                sh 'kubectl apply -f  eks-deploy-k8s.yaml'
 
             }
