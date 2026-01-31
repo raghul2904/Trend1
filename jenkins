@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     stages {
+
         stage('Clone Repo') {
             steps {
                 git url: 'https://github.com/raghul2904/Trend1.git', branch: 'main'
@@ -16,20 +17,25 @@ pipeline {
 
         stage('Push to DockerHub') {
             steps {
-               sh '''
+                sh '''
                     docker login -u raghul2904 -p dckr_pat_u35hSs8KYi8IEJ8X7sF7ou1Ci_I
                     docker push raghul2904/trend-app:latest
-                    '''
-                }
+                '''
             }
+        }
 
         stage('K8S Deploy') {
-         steps{
-            script {
-               withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS']]) {
-	           aws eks update-kubeconfig --region us-east-1 --name --demo		
-               sh 'kubectl apply -f  eks-deploy-k8s.yaml'
-
+            steps {
+                script {
+                    withCredentials([
+                        [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS']
+                    ]) {
+                        sh '''
+                            aws eks update-kubeconfig --region us-east-1 --name demo
+                            kubectl apply -f eks-deploy-k8s.yaml
+                        '''
+                    }
+                }
             }
         }
     }
