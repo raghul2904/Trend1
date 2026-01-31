@@ -23,10 +23,13 @@ pipeline {
                 }
             }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                sh 'kubectl apply -f deployment.yaml'
-                sh 'kubectl apply -f service.yaml'
+        stage('K8S Deploy') {
+         steps{
+            script {
+               withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS']]) {
+	           aws eks update-kubeconfig --region us-east-1 --name --scrumptious-metal-otter		
+               sh 'kubectl apply -f  eks-deploy-k8s.yaml'
+
             }
         }
     }
