@@ -32,7 +32,8 @@ pipeline {
                     ]) {
                         sh '''
                             aws eks update-kubeconfig --region us-east-1 --name demo
-                            kubectl apply -f eks-deploy-k8s.yaml
+                            kubectl apply -f deployment.yaml
+                            kubectl apply -f service.yaml
                         '''
                     }
                 }
