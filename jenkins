@@ -16,14 +16,12 @@ pipeline {
 
         stage('Push to DockerHub') {
             steps {
-                withCredentials([string(credentialsId: 'dockerhub-pass', variable: 'DOCKER_PASS')]) {
-                    sh '''
-                    echo $DOCKER_PASS | docker login -u raghul2904 --password-dckr_pat_u35hSs8KYi8IEJ8X7sF7ou1Ci_I
+               sh '''
+                    docker login -u raghul2904 --password-dckr_pat_u35hSs8KYi8IEJ8X7sF7ou1Ci_I
                     docker push raghul2904/trend-app:latest
                     '''
                 }
             }
-        }
 
         stage('Deploy to Kubernetes') {
             steps {
